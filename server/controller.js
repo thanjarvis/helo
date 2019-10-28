@@ -1,3 +1,12 @@
+const bcrypt = require('bcryptjs')
+// const session = require('express-session')
+// app.use(session({
+//     resave: false,
+//     saveUninitialized: true,
+//     secret: SESSION_SECRET,
+// }))
+
+
 module.exports = {
     register: async (req, res) => {
         const {username, password} = req.body
@@ -8,9 +17,26 @@ module.exports = {
         if (foundUser){
             res.status(409).send('there is already an account with this user')
         }else{
-            db.make_user(username, password)
-            .then(user => res.status(200).send(user))
-            .catch(err => console.log(err))
+            let salt = bcrypt.genSaltSync(10)
+            let hash = bcrypt.hashSync(password, salt)
+            let createdUser = await db.make_user(username, hash)
+            let user = createdUser[0]
+            // req.session.user = {id: createdUser[0].id, username: createdUser[0].username}
+            // res.status(200).send(req.session.user)
+
+            req.session.user = {
+                id: user.id,
+                username: username,
+                profilePic: user.profile_pic
+            }
+
+
+
+            res.status(200).send(req.session.user)
+
+            // db.make_user(username, hash)
+            // .then(user => res.status(200).send(user))
+            // .catch(err => console.log(err))
         }   
     },
     
@@ -18,12 +44,37 @@ module.exports = {
         const {username, password} = req.body
         const db = req.app.get('db')
 
-        await db.find_user_for_login(username, password)
-        .then(user => {
-            res.status(200).send(user)
-        })
-        .catch(err => console.log(err))
+        let foundUser = await db.find_user_for_login(username)
 
+        if(!foundUser){
+            res.status(200).send('user account not found')
+        }
+        let result = bcrypt.compareSync(password, foundUser[0].password)
+
+        if(!result){
+            res.status(403).send('wrong password')
+        }
+
+        let user = foundUser[0]
+
+        req.session.user = {
+            id: user.id,
+            username: username,
+            profilePic: user.profile_pic
+        }
+        res.status(200).send(req.session.user)
+
+        // await db.find_user_for_login(username, password)
+        // .then(user => {
+        //     res.status(200).send(user)
+        // })
+        // .catch(err => console.log(err))
+
+    },
+
+    logout: async (req, res) => {
+        req.session.destroy
+        res.sendStatus(200)
     },
 
     getPosts: async (req, res) => {

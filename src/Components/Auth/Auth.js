@@ -21,8 +21,8 @@ class Auth extends Component{
     handleRegister = () => {
         axios.post('/api/register', {username: this.state.username, password:this.state.password})
         .then((res) => {
-            this.props.getUser(res.data[0].id, res.data[0].username, res.data[0].profile_pic)
-            console.log('what is getting sent to reducer.getUser', res.data[0])            
+            this.props.getUser(res.data.id, res.data.username, res.data.profile_pic)
+            console.log('what is getting sent to reducer.getUser', res.data)            
             this.props.history.push('/dashboard')            
             
             
@@ -35,15 +35,18 @@ class Auth extends Component{
 
     handleLogin = () => {
         axios.post('/api/login', {username: this.state.username, password: this.state.password})
+
         .then((res) => {
             console.log('authres.data', res.data);
             if(res.data){
                 this.props.history.push('/dashboard')
-                this.props.getUser(res.data[0].id, res.data[0].username, res.data[0].profile_pic)
+                this.props.getUser(res.data.id, res.data.username, res.data.profile_pic)
             }else{
                 window.alert('incorrect username or password')
             }
         })
+        .catch(err => console.log(err))
+
     }
 
     render(){

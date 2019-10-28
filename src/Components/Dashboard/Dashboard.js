@@ -51,7 +51,8 @@ class Dashboard extends Component{
         axios.get(`/api/getMyPosts/${this.props.userId}`)
         .then(res => {
             this.setState({
-                posts: res.data
+                posts: res.data,
+                searchInput: ''
             })
         })
     }
@@ -62,7 +63,8 @@ class Dashboard extends Component{
         .then(res => {
             console.log(res.data)
             this.setState({
-                posts: res.data
+                posts: res.data,
+                searchInput: ''
             })
         })
     }
@@ -73,7 +75,8 @@ class Dashboard extends Component{
         .then(res => {
             // console.log(res.data)
             this.setState({
-                posts: res.data
+                posts: res.data,
+                searchInput: ''
             })
         })
     }
@@ -87,6 +90,7 @@ class Dashboard extends Component{
         }else if(this.state.checkBox === true && this.state.searchInput !== ''){
             this.getMySearchedPosts()
         }
+        
     }
     
 

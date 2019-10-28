@@ -1,7 +1,7 @@
 create table helo_users(
     id serial primary key,
     username varchar(20),
-    password varchar(20),
+    password varchar(300),
     profile_pic text
 );
 
