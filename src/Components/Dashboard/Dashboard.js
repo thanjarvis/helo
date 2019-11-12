@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Post from '../Post/Post'
 import axios from 'axios';
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 
 class Dashboard extends Component{
     constructor(){
@@ -123,10 +124,16 @@ class Dashboard extends Component{
 
                     <div>
                         {this.state.posts.map((element) => {
+                            console.log(element)
                             return(
-                                <Post
-                                    key={element.id}
-                                />
+                                <Link to={`/post/${element.id}`}>
+                                    <div key={element.id}>
+                                        <h4>{element.username}</h4>
+                                        <h4>{element.title}</h4>
+                                        <img src={element.profile_pic}/>
+                                    </div>
+                                </Link>
+                                
                             )
 
                         })}

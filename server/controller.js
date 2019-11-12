@@ -90,9 +90,9 @@ module.exports = {
 
     getMyPosts: async (req, res) => {
         const db = req.app.get('db')
-        const {id} = req.params
+        // const {id} = req.params
 
-        await db.get_my_posts(id)
+        await db.get_my_posts(req.session.user.id)
         .then(posts => {
             res.status(200).send(posts)
         })
@@ -115,13 +115,27 @@ module.exports = {
     getMySearchedPosts: async (req, res) => {
         const db = req.app.get('db')
         const {searchInput} = req.body
-        const {id} = req.params
+        // const {id} = req.params
 
-        await db.get_my_searched_posts(id, searchInput)
+        await db.get_my_searched_posts(req.session.user.id, searchInput)
         .then(posts => {
             res.status(200).send(posts)
         })
         .catch(err => console.log(err))
+    },
+
+    getSpecificPost: async (req, res) => {
+        const db = req.app.get('db')
+        const {id} = req.params
+        let specificPost = await db.get_specific_post(id)
+        res.status(200).send(specificPost)
+    },
+
+    makeNewPost: async (req, res) => {
+        const db = req.app.get('db')
+        const {title, img, content, authorId} = req.body
+        db.make_new_post(title, img, content, req.session.user.id)
+        res.sendStatus(200)
     }
 
 

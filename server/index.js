@@ -21,6 +21,7 @@ app.use(session({
     secret: SESSION_SECRET,
 }))
 
+//auth endpoints
 app.post('/api/register', ctrl.register)
 app.post('/api/login', ctrl.login)
 app.get('/api/logout', ctrl.logout)
@@ -30,7 +31,8 @@ app.get('/api/getPosts/', ctrl.getPosts)
 app.get('/api/getMyPosts/:id', ctrl.getMyPosts)
 app.post('/api/getSearchedPosts', ctrl.getSearchedPosts)
 app.post('/api/getMySearchedPosts/:id', ctrl.getMySearchedPosts)
-
+app.get('/api/getSpecificPost/:id', ctrl.getSpecificPost)
+app.post('/api/makeNewPost', ctrl.makeNewPost)
 
 
 
